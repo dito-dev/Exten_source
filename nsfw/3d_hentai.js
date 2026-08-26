@@ -160,9 +160,17 @@ const THREED_TAGS = [
 ];
 
 class DefaultExtension extends MProvider {
+  getBaseUrl() {
+    let base = (this.source && this.source.baseUrl) ? this.source.baseUrl : "https://3d-hentai.co";
+    if (typeof base === "string") {
+      base = base.replace(/["'%22\s\\]+$/g, "").replace(/\/+$/, "");
+    }
+    return base || "https://3d-hentai.co";
+  }
+
   getHeaders(url) {
     return {
-      "Referer": "https://3d-hentai.co/",
+      "Referer": `${this.getBaseUrl()}/`,
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
     };
   }
@@ -191,13 +199,17 @@ class DefaultExtension extends MProvider {
   }
 
   async requestDoc(slug) {
-    const url = slug.startsWith("http") ? slug : `${this.source.baseUrl}${slug.startsWith("/") ? "" : "/"}${slug}`;
+    const base = this.getBaseUrl();
+    let url = slug.startsWith("http") ? slug : `${base}${slug.startsWith("/") ? "" : "/"}${slug}`;
+    url = url.replace(/["'%22\s\\]+$/g, "");
     const res = await new Client().get(url, this.getHeaders(url));
     return new Document(res.body);
   }
 
   async requestJson(slug) {
-    const url = slug.startsWith("http") ? slug : `${this.source.baseUrl}${slug.startsWith("/") ? "" : "/"}${slug}`;
+    const base = this.getBaseUrl();
+    let url = slug.startsWith("http") ? slug : `${base}${slug.startsWith("/") ? "" : "/"}${slug}`;
+    url = url.replace(/["'%22\s\\]+$/g, "");
     const res = await new Client().get(url, this.getHeaders(url));
     return JSON.parse(res.body);
   }
@@ -390,7 +402,9 @@ class DefaultExtension extends MProvider {
   }
 
   async getDetail(url) {
-    const targetUrl = url.startsWith("http") ? url : `${this.source.baseUrl}${url.startsWith("/") ? "" : "/"}${url}`;
+    const base = this.getBaseUrl();
+    let targetUrl = url.startsWith("http") ? url : `${base}${url.startsWith("/") ? "" : "/"}${url}`;
+    targetUrl = targetUrl.replace(/["'%22\s\\]+$/g, "");
     const res = await new Client().get(targetUrl, this.getHeaders(targetUrl));
     const html = res.body;
     const doc = new Document(html);
@@ -509,12 +523,14 @@ class DefaultExtension extends MProvider {
   }
 
   async getVideoList(url) {
+    const cleanUrl = typeof url === "string" ? url.replace(/["'%22\s\\]+$/g, "") : url;
+
     // 1. If direct 3dhq1.org 3d full episode stream
-    if (url.includes("3dhq1.org/video/")) {
+    if (cleanUrl.includes("3dhq1.org/video/")) {
       return [
         {
-          url: url,
-          originalUrl: url,
+          url: cleanUrl,
+          originalUrl: cleanUrl,
           quality: "1080p MP4",
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
@@ -524,7 +540,7 @@ class DefaultExtension extends MProvider {
     }
 
     // 2. If url has ?video= parameter
-    const videoParamMatch = url.match(/[?&]video=([^&"'\s<>]+)/i);
+    const videoParamMatch = cleanUrl.match(/[?&]video=([^&"'\s<>]+)/i);
     if (videoParamMatch) {
       let videoCode = videoParamMatch[1];
       if (!videoCode.endsWith(".mp4")) {
@@ -534,7 +550,7 @@ class DefaultExtension extends MProvider {
       return [
         {
           url: videoUrl,
-          originalUrl: url,
+          originalUrl: cleanUrl,
           quality: "1080p MP4",
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
@@ -545,7 +561,9 @@ class DefaultExtension extends MProvider {
 
     // 3. If passed a 3d-hentai post URL directly, extract stream from page
     try {
-      const targetUrl = url.startsWith("http") ? url : `${this.source.baseUrl}${url.startsWith("/") ? "" : "/"}${url}`;
+      const base = this.getBaseUrl();
+      let targetUrl = cleanUrl.startsWith("http") ? cleanUrl : `${base}${cleanUrl.startsWith("/") ? "" : "/"}${cleanUrl}`;
+      targetUrl = targetUrl.replace(/["'%22\s\\]+$/g, "");
       const res = await new Client().get(targetUrl, this.getHeaders(targetUrl));
       const html = res.body;
       const videos = [];
@@ -563,7 +581,7 @@ class DefaultExtension extends MProvider {
 
         videos.push({
           url: `https://3dhq1.org/video/3d/${vCode}`,
-          originalUrl: url,
+          originalUrl: cleanUrl,
           quality: "1080p MP4",
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
@@ -578,8 +596,8 @@ class DefaultExtension extends MProvider {
 
     return [
       {
-        url: url,
-        originalUrl: url,
+        url: cleanUrl,
+        originalUrl: cleanUrl,
         quality: "1080p MP4",
         headers: {
           "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
