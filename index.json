@@ -20,5 +20,27 @@
     "additionalParams": "",
     "sourceCodeLanguage": 1,
     "notes": "Ahegao Online adult anime streaming extension"
+  },
+  {
+    "name": "3D Hentai",
+    "id": 1003,
+    "baseUrl": "https://3d-hentai.co",
+    "lang": "en",
+    "typeSource": "single",
+    "iconUrl": "https://www.google.com/s2/favicons?sz=128&domain=3d-hentai.co",
+    "dateFormat": "",
+    "dateFormatLocale": "",
+    "isNsfw": true,
+    "hasCloudflare": false,
+    "sourceCodeUrl": "https://raw.githubusercontent.com/dito-dev/Exten_source/main/nsfw/3d_hentai.js",
+    "apiUrl": "https://3d-hentai.co/wp-json/wp/v2",
+    "version": "1.0.0",
+    "isManga": false,
+    "itemType": 1,
+    "isFullData": false,
+    "appMinVerReq": "0.5.0",
+    "additionalParams": "",
+    "sourceCodeLanguage": 1,
+    "notes": "3D Hentai video streaming extension"
   }
 ]
