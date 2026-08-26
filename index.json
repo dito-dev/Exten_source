@@ -1,0 +1,24 @@
+[
+  {
+    "name": "Ahegao",
+    "id": 1002,
+    "baseUrl": "https://ahegao.online",
+    "lang": "en",
+    "typeSource": "single",
+    "iconUrl": "https://www.google.com/s2/favicons?sz=128&domain=ahegao.online",
+    "dateFormat": "",
+    "dateFormatLocale": "",
+    "isNsfw": true,
+    "hasCloudflare": false,
+    "sourceCodeUrl": "https://raw.githubusercontent.com/dito-dev/Exten_source/main/nsfw/ahegao.js",
+    "apiUrl": "https://ahegao.online/wp-json/wp/v2",
+    "version": "1.0.1",
+    "isManga": false,
+    "itemType": 1,
+    "isFullData": false,
+    "appMinVerReq": "0.5.0",
+    "additionalParams": "",
+    "sourceCodeLanguage": 1,
+    "notes": "Ahegao Online adult anime streaming extension"
+  }
+]
