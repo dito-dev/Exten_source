@@ -127,9 +127,17 @@ const AHEGAO_SORTS = [
 ];
 
 class DefaultExtension extends MProvider {
+  getBaseUrl() {
+    let base = (this.source && this.source.baseUrl) ? this.source.baseUrl : "https://ahegao.online";
+    if (typeof base === "string") {
+      base = base.replace(/["'%22\s\\]+$/g, "").replace(/\/+$/, "");
+    }
+    return base || "https://ahegao.online";
+  }
+
   getHeaders(url) {
     return {
-      "Referer": "https://ahegao.online/",
+      "Referer": `${this.getBaseUrl()}/`,
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
     };
   }
@@ -158,13 +166,17 @@ class DefaultExtension extends MProvider {
   }
 
   async requestDoc(slug) {
-    const url = slug.startsWith("http") ? slug : `${this.source.baseUrl}${slug.startsWith("/") ? "" : "/"}${slug}`;
+    const base = this.getBaseUrl();
+    let url = slug.startsWith("http") ? slug : `${base}${slug.startsWith("/") ? "" : "/"}${slug}`;
+    url = url.replace(/["'%22\s\\]+$/g, "");
     const res = await new Client().get(url, this.getHeaders(url));
     return new Document(res.body);
   }
 
   async requestJson(slug) {
-    const url = slug.startsWith("http") ? slug : `${this.source.baseUrl}${slug.startsWith("/") ? "" : "/"}${slug}`;
+    const base = this.getBaseUrl();
+    let url = slug.startsWith("http") ? slug : `${base}${slug.startsWith("/") ? "" : "/"}${slug}`;
+    url = url.replace(/["'%22\s\\]+$/g, "");
     const res = await new Client().get(url, this.getHeaders(url));
     return JSON.parse(res.body);
   }
